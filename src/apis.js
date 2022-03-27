@@ -1,17 +1,20 @@
 import { toast } from 'react-toastify';
 
-export function signIn(username, password) {
-  return fetch("auth/token/login/", {
-    method: "POST",
+function request(path, {data = null, token = null, method="GET"}) {
+  return fetch(path, {
+    method,
     headers: {
-      'content-type': "application/json",
+      Authorization: token ? `Token ${token}` : "",
+      'Content-type': "application/json",
 
     },
-    body: JSON.stringify({username, password})
+    body: method !== "GET" && method !== "DELETE" ? JSON.stringify(data) : null
   }).then((response) => {
-    console.log(response);
     // If it is success
     if (response.ok) {
+      if(method === "DELETE") {
+        return true;
+      }
       return response.json();
     }
     // Otherwise, if there is an error
@@ -34,5 +37,19 @@ export function signIn(username, password) {
   .catch((e) => {
     // Handle all Errors
     toast(e.message, { type: "error" });
+  })
+}
+
+export function signIn(username, password) {
+  return request("/auth/token/login", {
+    data: {username, password},
+    method: "POST",
+  })
+}
+
+export function register(username, password) {
+  return request("/auth/users/", {
+    data: {username, password},
+    method: "POST",
   })
 }
