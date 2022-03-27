@@ -1,13 +1,26 @@
-import { Button, Card, Col, Form, Row } from "react-bootstrap";
-import { React, useState } from "react";
+import { Button, Card, Col, Form, Row, Spinner } from "react-bootstrap";
+import { React, useState, useEffect, useContext } from "react";
+import { useHistory } from 'react-router-dom';
+
 import { signIn } from "../apis";
 import MainLayout from "../layouts/MainLayout";
+import AuthContext from "../contexts/AuthContext";
 
 const Login = () => {
 	const [username, setUsername] = useState("");
 	const [password, setPassword] = useState("");
+
+	const history = useHistory();
+	const auth = useContext(AuthContext);
+
+	useEffect(() => {
+		if(auth.token) {
+			history.replace('/places');
+		}
+	});
+
 	const onClick = () => {
-		signIn(username, password);
+		auth.signIn(username, password, () => history.replace("/places"));
 	};
 
 	return (
@@ -35,8 +48,21 @@ const Login = () => {
 								/>
 							</Form.Group>
 
-							<Button variant="standard" block onClick={onClick}>
-								Sign In
+							<Button variant="standard" block onClick={onClick} disabled={auth.loading}>
+								{
+									auth.loading ? (
+										<Spinner 
+											variant="standard"
+											as="span"
+											animation="border"
+											size="sm"
+											role="status"
+											aria-hidden="true"
+										/>
+									) : (
+										"Sign In"
+									)
+								}
 							</Button>
 
 							
