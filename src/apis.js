@@ -1,6 +1,6 @@
 import { toast } from 'react-toastify';
 
-function request(path, {data = null, token = null, method="GET"}) {
+function request(path, {data = null, token = null, method = "GET"}) {
   return fetch(path, {
     method,
     headers: {
@@ -18,7 +18,9 @@ function request(path, {data = null, token = null, method="GET"}) {
       return response.json();
     }
     // Otherwise, if there is an error
-    return response.json().then((json) => {
+    return response
+      .json()
+      .then((json) => {
       // handle JSON error response by server
       if (response.status === 400) {
         const errors = Object.keys(json).map(
@@ -41,7 +43,7 @@ function request(path, {data = null, token = null, method="GET"}) {
 }
 
 export function signIn(username, password) {
-  return request("/auth/token/login", {
+  return request("/auth/token/login/", {
     data: {username, password},
     method: "POST",
   })
@@ -52,4 +54,12 @@ export function register(username, password) {
     data: {username, password},
     method: "POST",
   })
+}
+
+export function fetchPlaces(token) {
+  return request("/api/places/", {token});
+}
+
+export function addPlace(data, token) {
+  return request("/api/places/", { data, token, method: "POST" });
 }
