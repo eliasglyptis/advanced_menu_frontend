@@ -63,3 +63,16 @@ export function fetchPlaces(token) {
 export function addPlace(data, token) {
   return request("/api/places/", { data, token, method: "POST" });
 }
+
+export function uploadImage(image) {
+  const formData = new FormData();
+  formData.append("file", image);
+  formData.append("upload_preset", "AdvancedMenuPhotos");
+
+  return fetch("https://api.cloudinary.com/v1_1/theaworld/image/upload", {
+    method: "POST",
+    body: formData,
+  }).then((response) => {
+    return response.json();
+  });
+}

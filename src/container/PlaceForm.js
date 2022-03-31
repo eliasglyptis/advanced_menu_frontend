@@ -4,6 +4,9 @@ import React, { useState, useContext } from 'react';
 import { addPlace } from '../apis';
 import AuthContext from '../contexts/AuthContext';
 
+import ImageDropzone from './ImageDropzone';
+
+
 const PlaceForm = ({ onDone }) => {
   const [name, setName] = useState("");
   const [image, setImage] = useState("");
@@ -32,10 +35,7 @@ const PlaceForm = ({ onDone }) => {
 
       <Form.Group>
         <Form.Label>Image</Form.Label>
-        <Form.Control
-          type="text" placeholder="Enter Image URL" value={image}
-          onChange={(e) => setImage(e.target.value)}
-        />
+        <ImageDropzone value={image} onChange={setImage} />
       </Form.Group>
       <Button variant="standard" block onClick={onClick}>
         Add
