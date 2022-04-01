@@ -76,3 +76,9 @@ export function uploadImage(image) {
     return response.json();
   });
 }
+
+export function fetchPlace(id, token) {
+  return request(`/api/places/${id}`, { token });
+}
+
+
