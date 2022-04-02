@@ -85,3 +85,7 @@ export function addCategory(data, token) {
   return request("/api/categories/", { data, token, method: "POST" });
 }
 
+export function addMenuItems(data, token) {
+  return request("/api/menu_items/", { data, token, method: "POST" });
+}
+

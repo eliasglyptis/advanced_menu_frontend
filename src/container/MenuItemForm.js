@@ -3,13 +3,21 @@ import { Button, Form, Popover, Overlay } from "react-bootstrap";
 import { RiPlayListAddFill } from "react-icons/ri";
 import { toast } from "react-toastify";
 
-import { addCategory } from "../apis";
+import { addCategory, addMenuItems } from "../apis";
 import AuthContext from "../contexts/AuthContext";
+import ImageDropzone from "./ImageDropzone";
 
 const MenuItemForm = ({ place, onDone }) => {
   const [categoryName, setCategoryName] = useState("");
   const [categoryFormShow, setCategoryFormShow] = useState(false);
   const [category, setCategory] = useState("");
+
+  const [name, setName] = useState("");
+  const [price, setPrice] = useState(0);
+  const [description, setDescription] = useState("");
+  const [image, setImage] = useState("");
+  const [isAvailable, setIsAvailable] = useState(true);
+
 
   const target = useRef(null);
 
@@ -26,8 +34,34 @@ const MenuItemForm = ({ place, onDone }) => {
     }
   };
 
+  const onAddMenuItems = async () => {
+    const json = await addMenuItems({
+      place: place.id,
+      category: category,
+      name: name,
+      price: price,
+      description: description,
+      image: image,
+      isAvailable: isAvailable
+    }, auth.token);
+
+    console.log(json);
+
+    if(json) {
+      toast(`Menu Item: ${json.name} was created`, { type: "success" });
+      setCategory("");
+      setName("");
+      setPrice(0);
+      setDescription("");
+      setImage("");
+      setIsAvailable(true);
+      onDone();
+    }
+  }
+
   return (
     <div>
+      {/* CATEGORIES FORM */}
       <Form.Group>
         <Form.Label>Category</Form.Label>
         <div className="d-flex align-items-center">
@@ -72,6 +106,53 @@ const MenuItemForm = ({ place, onDone }) => {
 
         </div>
       </Form.Group>
+      {/* MENU ITEMS FORM */}
+      <Form.Group>
+        <Form.Label>Name</Form.Label>
+        <Form.Control 
+          type="text"
+          placeholder="Enter Name"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+
+        />
+        
+      </Form.Group>
+      <Form.Group>
+        <Form.Label>Price</Form.Label>
+        <Form.Control 
+          type="number"
+          placeholder="Enter Price"
+          value={price}
+          onChange={(e) => setPrice(e.target.value)}
+
+        />
+      </Form.Group>
+      <Form.Group>
+        <Form.Label>Description</Form.Label>
+        <Form.Control 
+          type="text"
+          placeholder="Enter Description"
+          value={description}
+          onChange={(e) => setDescription(e.target.value)}
+
+        />
+      </Form.Group>
+      <Form.Group>
+        <Form.Label>Image</Form.Label>
+        <ImageDropzone value={image} onChange={setImage} />
+      </Form.Group>
+      <Form.Group>
+        <Form.Check 
+          type="checkbox"
+          label="Is Available"
+          checked={isAvailable}
+          onChange={(e) => setIsAvailable(e.target.checked)}
+        />
+      </Form.Group>
+      <Button variant="standard" block onClick={onAddMenuItems}>
+        + Add New Item
+      </Button>
     </div>
   )
 }
