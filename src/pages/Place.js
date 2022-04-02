@@ -20,6 +20,7 @@ const Panel = styled.div`
 const Place = () => {
   const [place, setPlace] = useState({});
   const [menuItemFormShow, setMenuItemFormShow] = useState(false);
+  const [selectedItem, setSelectedItem] = useState(null);
 
   const showModal = () => setMenuItemFormShow(true);
   const hideModal = () => setMenuItemFormShow(false);
@@ -69,7 +70,11 @@ const Place = () => {
                 <MenuItem 
                   key={item.id} 
                   item={item} 
-                  onEdit={() => showModal()}
+                  onEdit={() => {
+                    setSelectedItem(item);
+                    showModal()
+                  }}
+                  
                 />
               ))}
             </div>
@@ -82,6 +87,7 @@ const Place = () => {
           <MenuItemForm 
             place={place}
             onDone={() => hideModal()}
+            item={selectedItem}
           />
         </Modal.Body>
       </Modal>
