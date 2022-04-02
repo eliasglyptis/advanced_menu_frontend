@@ -81,4 +81,7 @@ export function fetchPlace(id, token) {
   return request(`/api/places/${id}`, { token });
 }
 
+export function addCategory(data, token) {
+  return request("/api/categories/", { data, token, method: "POST" });
+}
 
