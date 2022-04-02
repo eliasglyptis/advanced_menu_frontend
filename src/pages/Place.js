@@ -1,5 +1,5 @@
 import { IoMdArrowBack } from "react-icons/io";
-import { Row, Col, Button } from "react-bootstrap";
+import { Row, Col, Button, Modal } from "react-bootstrap";
 import { useParams, useHistory } from "react-router-dom";
 import React, { useEffect, useState, useContext } from "react";
 import styled from "styled-components";
@@ -8,6 +8,7 @@ import { fetchPlace } from "../apis";
 import AuthContext from "../contexts/AuthContext";
 import MainLayout from "../layouts/MainLayout";
 import MenuItemForm from "../container/MenuItemForm";
+import MenuItem from "../components/MenuItem";
 
 const Panel = styled.div`
   background-color: white;
@@ -18,6 +19,10 @@ const Panel = styled.div`
 
 const Place = () => {
   const [place, setPlace] = useState({});
+  const [menuItemFormShow, setMenuItemFormShow] = useState(false);
+
+  const showModal = () => setMenuItemFormShow(true);
+  const hideModal = () => setMenuItemFormShow(false);
 
   const auth = useContext(AuthContext);
   const params = useParams();
@@ -54,7 +59,32 @@ const Place = () => {
             <MenuItemForm place={place} onDone={onFetchPlace} />
           </Panel>
         </Col>
+        <Col md={8}>
+          {place?.categories?.map((category) => (
+            <div key={category.id} className="mb-5">
+              <h4 className="mb-0 mr-2 mb-4">
+                <b>{category.name}</b>
+              </h4>
+              {category.menu_items.map((item) => (
+                <MenuItem 
+                  key={item.id} 
+                  item={item} 
+                  onEdit={() => showModal()}
+                />
+              ))}
+            </div>
+          ))}
+        </Col>
       </Row>
+      <Modal show={menuItemFormShow} onHide={hideModal} centered>
+        <Modal.Body>
+          <h4 className="text-center">Menu Item</h4>
+          <MenuItemForm 
+            place={place}
+            onDone={() => hideModal()}
+          />
+        </Modal.Body>
+      </Modal>
     </MainLayout>
   )
 };
